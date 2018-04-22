@@ -1,0 +1,71 @@
+<?php
+
+/**
+ * @file
+ * Custom demo_menu block.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function demo_menu_menu() {
+  for($i = 0; $i < 30; $i++) {
+    $items['demo-menu/page-'.$i] = array (
+      'title' => 'Page ' . $i,
+      'page callback' => 'demo_menu_view_page',
+      'access arguments' => array(
+        'access content',
+      ),
+    );
+  } // for
+  return $items;
+} // function demo_menu_menu()
+
+/**
+ * Implements hook_page_build().
+ */
+function demo_menu_page_build(&$page) {
+  $page['page_top']['demo_menu'] = array(
+    '#theme' => 'demo_menu_nav',
+    '#menu' => demo_menu_view(),
+    '#attached' => array(
+      'css' => array(
+        drupal_get_path('module', 'demo_menu') . '/css/demo_menu.css',
+      ),
+      'js' => array(
+        drupal_get_path('module', 'demo_menu') . '/js/demo_menu.js',
+      ),
+    ),
+  );
+} // function demo_menu_page_build()
+
+/**
+ * Implements hook_theme().
+ */
+function demo_menu_theme($existing, $type, $theme, $path) {
+  return array(
+    'demo_menu_nav' => array(
+      'variables' => array(
+        'menu' => NULL
+      ),
+      'template' => 'demo-menu-nav',
+      'path' => $path . '/theme',
+    ),
+  );
+} // function demo_menu_theme()
+
+/**
+ * Callback for the 'demo-menu' output
+ */
+function demo_menu_view() {
+  $menu = menu_tree_output(menu_tree_all_data('demo-menu'));
+
+  return $menu;
+} // function demo_menu_view()
+
+/**
+ * Page callback for demo content.
+ */
+function demo_menu_view_page() {
+  return 'This is just a demo';
+} // function demo_menu_view_page()

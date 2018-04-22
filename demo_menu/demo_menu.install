@@ -1,0 +1,64 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the demo_menu module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function demo_menu_install() {
+  $menu_name = 'demo-menu';
+  // If the menu doesn't already exist, we'll create it.
+  // (If it does, we'll continue adding links anyway. In the event of a bad uninstall.)
+  if(!menu_load($menu_name)) {
+    $menu = array(
+      'menu_name' => $menu_name,
+      'title' => t('Demo Menu'),
+      'description' => t('A multi-level menu'),
+    );
+    menu_save($menu);
+
+    // Creating 30 links, with every 5th link being the parent link of the next 4.
+    $mlid = NULL;
+    $plid = NULL;
+    for($i = 0; $i < 30; $i++) {
+      // If this is the 2nd link in every group of 5 links, switch the parent link id to the
+      // link we just saved.
+      if($i % 5 == 1) {
+        $plid = $menu_link['mlid'];
+      } // if
+      // If this is the every-fifth link (or the very first), it is now the parent link
+      if($i % 5 == 0) {
+        $plid = NULL;
+      } // if
+      if($path = drupal_get_normal_path('demo-menu/page-'.$i)) {
+        $menu_link = array(
+          'link_path' => $path,
+          'link_title' => 'Page ' . $i,
+          'language' => 'en',
+          'menu_name' => $menu_name,
+          'module' => 'demo_menu',
+          'plid' => $plid,
+          'weight' => $i,
+          'customized' => 1,
+          'expanded' => TRUE,
+        );
+        // Saving each link to the 'demo-menu' menu
+        menu_link_save($menu_link);
+      } // if
+    } // for
+  } // if
+} // demo_menu_install()
+
+/**
+ * Implements hook_uninstall().
+ */
+function demo_menu_uninstall() {
+  // Deleting our menu. Recursively deletes its own links.
+  $menu_name = 'demo-menu';
+  if($menu = menu_load($menu_name)) {
+    menu_delete($menu);
+  } // if
+} // demo_menu_uninstall()
