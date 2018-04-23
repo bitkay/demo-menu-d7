@@ -251,6 +251,9 @@ html.menu-open body {
     transition: opacity 0.4s, transform 0.35s, z-index 0.45s;
     visibility: visible;
   }
+  #demo-menu #demo-menu-nav .menu li.expanded li:first-of-type {
+    display: none;
+  }
   #demo-menu #demo-menu-nav .menu li.last ul {
     right: 0;
   }

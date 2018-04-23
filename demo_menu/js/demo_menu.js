@@ -18,16 +18,23 @@ jQuery( document ).ready(function($) {
   });
 
   // For JS users only, add the Back link for submenus
+  // For JS users only, clone the first-level link and add the Back link for submenus
+  $.each($('#demo-menu #demo-menu-nav .menu li.expanded'), function() {
+    $(this).find('.menu').prepend($(this).find('> a').clone());
+    $(this).find('.menu > a').wrap('<li class="menu-item"></li>')
+  });
   $('#demo-menu #demo-menu-nav .menu li.expanded .menu').prepend('<a href="#" class="submenu-close">Back</a>');
 
   // When a top-level link is clicked, open its submenu
   $('#demo-menu #demo-menu-nav .menu li.expanded > a').click(function(e) {
-    e.preventDefault();
-    $('#demo-menu #demo-menu-nav').toggleClass('submenu-open');
-    $(this).parent().toggleClass('submenu-open');
-    setTimeout(function() {
-      $(this).parent().find('.submenu-close').focus();
-    }, 300);
+    if ($(window).width() < 1024) {
+      e.preventDefault();
+      $('#demo-menu #demo-menu-nav').toggleClass('submenu-open');
+      $(this).parent().toggleClass('submenu-open');
+      setTimeout(function() {
+        $(this).parent().find('.submenu-close').focus();
+      }, 300);
+    }
   });
 
   // When the submenu link is closed... close the submenu.
